@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortified - Smart Waste Sorting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Original Color Palette --- */
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Original dark gradient */
+            color: #f0f0f0; /* Original light text color */
+            overflow-x: hidden;
+             scroll-behavior: smooth; /* Optional: Modern CSS smooth scroll */
+        }
+        header {
+            background: linear-gradient(135deg, #00e676, #00c853); /* Original green gradient */
+            color: #121212; /* Original dark text for header */
+            padding: 120px 20px; /* Reverted padding */
+            text-align: center;
+            animation: fadeInDown 2s ease;
+        }
+        header h1 {
+            font-size: 3.8em;
+            margin: 0;
+             color: #121212; /* Original dark color for main title */
+        }
+        header p {
+            font-size: 1.6em;
+            margin-top: 15px; /* Reverted margin */
+            color: #121212; /* Original dark color for header text */
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0f2027; /* Original dark background */
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Kept shadow */
+        }
+        nav a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #00e676; /* Original green for nav links */
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #69f0ae; /* Original lighter green on hover */
+        }
+        section {
+            padding: 60px 20px;
+            max-width: 1100px;
+            margin: auto;
+            animation: fadeInUp 2s ease;
+        }
+        section h2 {
+            color: #00e676; /* Original green for section headings */
+            margin-bottom: 25px;
+            font-size: 2.8em;
+            text-align: center;
+        }
+        section p {
+            font-size: 1.2em;
+            line-height: 1.7em;
+            text-align: center;
+            color: #f0f0f0; /* Original light text color */
+        }
+        footer {
+            background-color: #0f2027; /* Original dark background */
+            color: #888; /* Original footer text color */
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 0.95em;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #00e676; /* Original green button background */
+            color: #121212; /* Original dark text for contrast on button */
+            text-decoration: none;
+            border-radius: 30px;
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn:hover {
+            background-color: #69f0ae; /* Original lighter green on button hover */
+            transform: scale(1.05);
+        }
+
+        /* Styles for the Teachable Machine section and confidence bars */
+        #demo-section {
+            background-color: #1a3441; /* Kept this slightly different dark shade */
+            text-align: center;
+        }
+        #demo-section h2 {
+             color: #69f0ae; /* Kept lighter green heading for demo */
+        }
+        #demo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        #webcam-container canvas {
+            border: 3px solid #00e676; /* Green border for webcam */
+            border-radius: 8px;
+        }
+
+        /* Styles for the label container and bars */
+        #label-container {
+            width: 100%; /* Allow the container to take available width */
+            max-width: 300px; /* Max width for the bars */
+            margin-top: 20px;
+            text-align: left; /* Align text to the left within the container */
+        }
+
+        .class-prediction {
+            margin-bottom: 15px; /* Space between each class prediction */
+        }
+
+        .class-name {
+            font-size: 1.2em;
+            color: #f0f0f0; /* Light text for class names */
+            margin-bottom: 5px;
+        }
+
+        .confidence-bar-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle light background for bar track */
+            border-radius: 5px;
+            overflow: hidden; /* Hide parts of the bar that exceed the container */
+            height: 20px; /* Height of the bar */
+        }
+
+        .confidence-bar {
+            height: 100%;
+            background-color: #00e676; /* Original green for the confidence bar */
+            width: 0%; /* Initial width is 0 */
+            transition: width 0.3s ease-in-out; /* Smooth animation for width changes */
+        }
+
+
+        #demo-section button {
+             padding: 12px 30px;
+            background-color: #00e676; /* Original green button */
+            color: #121212; /* Original dark text on button */
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+             transition: background-color 0.3s, transform 0.3s;
+        }
+         #demo-section button:hover {
+            background-color: #69f0ae; /* Original lighter green on hover */
+            transform: scale(1.05);
+        }
+
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sortified</h1>
+    <p>Smart AI to Revolutionize Waste Sorting and Save Our Planet</p>
+    <a href="#about" class="btn">Learn More</a>
+</header>
+
+<nav>
+    <a href="#about">About</a>
+    <a href="#how">How It Works</a>
+    <a href="#impact">Impact</a>
+    <a href="#demo-section">Live Demonstration</a>
+</nav>
+
+<section id="about">
+    <h2>About Sortified</h2>
+    <p>Sortified is an AI-powered system that identifies and separates biodegradable and non-biodegradable waste. It was developed using Google's Teachable Machine, making it accessible, innovative, and highly efficient. Our goal is to make waste management smarter, faster, and better for the environment, reducing the burden on landfills and encouraging recycling and composting practices worldwide.</p>
+</section>
+
+<section id="how">
+    <h2>How It Works</h2>
+    <p>Using advanced image recognition trained on Teachable Machine, Sortified scans waste materials in real-time. It classifies each item accurately into biodegradable or non-biodegradable categories, helping users properly sort their waste at homes, schools, and businesses with ease.</p>
+</section>
+
+<section id="impact">
+    <h2>Our Impact</h2>
+    <p>By encouraging correct waste segregation, Sortified reduces pollution, promotes composting, saves landfill space, and boosts recycling rates. Our mission is to empower communities to make eco-friendly choices with minimal effort — leading to a cleaner, greener planet for future generations.</p>
+</section>
+
+<section id="demo-section">
+    <h2>Sortified image recognition model</h2>
+     <div id="demo-container">
+        <div>Live Demonstration</div>
+        <button type="button" onclick="init()">Start</button>
+        <div id="webcam-container"></div>
+        <div id="label-container"></div>
+     </div>
+</section>
+
+
+<footer>
+    &copy; 2025 Sortified. Made with Teachable Machine. All Rights Reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+<script type="text/javascript">
+    // More API functions here:
+    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    // the link to your model provided by Teachable Machine export panel
+    // IMPORTANT: Make sure your model files (model.json, weights.bin, metadata.json) are in a folder named 'my_model'
+    // in the same directory as this HTML file, or update the URL path accordingly.
+    const URL = "./my_model/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    // Load the image model and setup the webcam
+    async function init() {
+        console.log("Init function started."); // Added for debugging
+
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        try {
+            // load the model and metadata
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            // Convenience function to setup a webcam
+            const flip = true; // whether to flip the webcam
+            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+            await webcam.setup(); // request access to the webcam
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            // append elements to the DOM
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+            labelContainer = document.getElementById("label-container");
+            labelContainer.innerHTML = ''; // Clear previous content
+
+            // Create div and bar for each class
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPredictionDiv = document.createElement("div");
+                classPredictionDiv.classList.add("class-prediction");
+
+                const classNameSpan = document.createElement("div");
+                classNameSpan.classList.add("class-name");
+                // Initial text (will be updated by predict)
+                classNameSpan.innerHTML = `Class ${i}`; // Placeholder text
+
+                const barContainer = document.createElement("div");
+                barContainer.classList.add("confidence-bar-container");
+
+                const confidenceBar = document.createElement("div");
+                confidenceBar.classList.add("confidence-bar");
+                confidenceBar.style.width = '0%'; // Start with 0 width
+
+                barContainer.appendChild(confidenceBar);
+
+                classPredictionDiv.appendChild(classNameSpan);
+                classPredictionDiv.appendChild(barContainer);
+
+                labelContainer.appendChild(classPredictionDiv);
+            }
+
+
+            // Hide the start button and initial text after initialization
+            document.querySelector('#demo-section button').style.display = 'none';
+            document.querySelector('#demo-container div:first-child').style.display = 'none';
+
+        } catch (error) {
+            console.error("Error initializing the model or webcam:", error);
+            labelContainer.innerHTML = 'Error loading model or accessing webcam. Check console for details.';
+            // Optionally show the start button again or a message
+        }
+    }
+
+    async function loop() {
+        webcam.update(); // update the webcam frame
+        await predict();
+        // Use requestAnimationFrame to loop only when the browser is ready
+        window.requestAnimationFrame(loop);
+    }
+
+    // run the webcam image through the image model
+    async function predict() {
+        // predict can take in an image, video or canvas html element
+        const prediction = await model.predict(webcam.canvas);
+
+        for (let i = 0; i < maxPredictions; i++) {
+             // Check if the elements for this class prediction exist
+            if (labelContainer.childNodes[i]) {
+                const classPredictionDiv = labelContainer.childNodes[i];
+                const classNameSpan = classPredictionDiv.querySelector('.class-name');
+                const confidenceBar = classPredictionDiv.querySelector('.confidence-bar');
+
+                 // Ensure the elements were found before trying to update
+                if (classNameSpan && confidenceBar) {
+                    const confidence = prediction[i].probability; // Probability is between 0 and 1
+
+                    // Calculate the integer percentage
+                    const percentage = Math.floor(confidence * 100);
+
+                    const classPredictionText =
+                        prediction[i].className + ": " + percentage + "%"; // Display as integer percentage
+
+                    // Update the text
+                    classNameSpan.innerHTML = classPredictionText;
+
+                    // Update the bar width (percentage)
+                    confidenceBar.style.width = percentage + '%';
+                 } else {
+                     console.warn(`Could not find elements for prediction class ${i}`);
+                 }
+            } else {
+                 console.warn(`Could not find prediction div for class index ${i}`);
+            }
+        }
+    }
+</script>
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default jump
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth' // Smooth scrolling animation
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
