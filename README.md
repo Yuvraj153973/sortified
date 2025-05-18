@@ -3,12 +3,12 @@ Sortified is an interactive project built using Teachable Machine and web techno
 
 This project uses a custom-trained model from Teachable Machine to allow gesture or image-based input, adding a fun and intuitive way to interact with sorting algorithms. Whether you're learning about sorting or exploring how machine learning can be used creatively, Sortified offers a unique experience.
 
-##🔧 Built with:
+## 🔧 Built with:
 Teachable Machine (Google)
 
 I also made a website about it
 
-##🚀 Features:
+## 🚀 Features:
 ML model trained with Teachable Machine
 
 Visual sorting algorithm demos
